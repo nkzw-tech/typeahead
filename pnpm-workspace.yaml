@@ -1,0 +1,8 @@
+minimumReleaseAgeExclude:
+  - '@nkzw/*'
+  - '@voidzero-dev/*'
+  - vite-plus
+
+peerDependencyRules:
+  allowedVersions:
+    vite: '*'
