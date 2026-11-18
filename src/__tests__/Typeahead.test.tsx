@@ -57,7 +57,7 @@ test.each([{ isComposing: true }, { keyCode: 229 }])('does not intercept IME key
   expect(input.value).toBe('東京');
 });
 
-test('composition lifecycle also guards programmatic input', () => {
+test('composition lifecycle also guards programmatic input', async () => {
   const controls = createRef<TypeaheadControls>();
   const { input, onSelect } = setup({ controlsRef: controls });
   query(input, '東');
@@ -66,7 +66,9 @@ test('composition lifecycle also guards programmatic input', () => {
   fireEvent.keyDown(input, { key: 'Enter' });
   expect(onSelect).not.toHaveBeenCalled();
   fireEvent.compositionEnd(input);
-  act(() => controls.current?.dispatch('accept'));
+  await act(async () => {
+    controls.current?.dispatch('accept');
+  });
   expect(input.value).toBe('東京');
 });
 
@@ -177,7 +179,7 @@ test('selection callback can clear the field for tag entry', () => {
   expect(input.value).toBe('');
 });
 
-test('external navigation only consumes events for the focused enabled input', () => {
+test('external navigation only consumes events for the focused enabled input', async () => {
   const first = createRef<TypeaheadControls>();
   const second = createRef<TypeaheadControls>();
   const source = createSource();
@@ -194,7 +196,9 @@ test('external navigation only consumes events for the focused enabled input', (
   expect(second.current?.dispatch('next', event)).toBe(false);
   act(() => expect(first.current?.dispatch('next', event)).toBe(true));
   expect(event.preventDefault).toHaveBeenCalledTimes(1);
-  act(() => first.current?.dispatch('accept'));
+  await act(async () => {
+    first.current?.dispatch('accept');
+  });
   expect(input.value).toBe('Alpha Bravo');
   rerender(<Typeahead controlsRef={first} dataSource={source} disabled label="First" />);
   expect(first.current?.dispatch('accept')).toBe(false);
@@ -311,7 +315,7 @@ test('focus-preserving external controls do not dismiss the list', () => {
   button.remove();
 });
 
-test('selection cancels pending remote work without fetching the selected label', () => {
+test('selection cancels pending remote work without fetching the selected label', async () => {
   vi.useFakeTimers();
   try {
     const handler = vi.fn();
@@ -320,7 +324,9 @@ test('selection cancels pending remote work without fetching the selected label'
     const { input } = setup({ dataSource: source });
     query(input, 'al');
     fireEvent.keyDown(input, { key: 'Enter' });
-    act(() => vi.runAllTimers());
+    await act(async () => {
+      await vi.runAllTimersAsync();
+    });
     expect(handler).not.toHaveBeenCalled();
   } finally {
     vi.useRealTimers();

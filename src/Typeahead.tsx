@@ -1,10 +1,4 @@
-import {
-  type CompositionEvent,
-  type FocusEvent,
-  type InputHTMLAttributes,
-  type ReactNode,
-  type Ref,
-} from 'react';
+import type { CompositionEvent, FocusEvent, InputHTMLAttributes, ReactNode, Ref } from 'react';
 import type { TypeaheadDataSourceEntry } from './TypeaheadDataSource.ts';
 import useTypeahead, { type TypeaheadOptions } from './useTypeahead.ts';
 
